@@ -59,7 +59,7 @@ model.repair()
 model.solver = 'glpk'
 logger.info('loaded model')
 
-def validate(original_model, reactions):
+def validate(original_model, reactions): # if there is metabolite not seen in the og model, add it to the new model, and see if it optimizes to return true. 
     model2 = original_model.copy()
     mets = [x.metabolites for x in reactions]
     all_keys = set().union(*(d.keys() for d in mets))
