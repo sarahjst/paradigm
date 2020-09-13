@@ -222,20 +222,20 @@ else:
 logger.info('reading experimental data')
 # experimental data
 os.chdir(data_path)
-genome_ids = pd.read_csv("auxotrophies_mapping_to_genomeID.csv",header = None).T
+genome_ids = pd.read_csv("auxotrophies_mapping_to_genomeID.csv",header = None).T # species and strains. and transpose that from columns into rows 
 new_header = genome_ids.iloc[0].copy()
 genome_ids = genome_ids[1:].copy()
 genome_ids.columns = new_header
-met_ids = pd.read_csv("auxotrophies_mapping_to_metID.csv")
-gapfilling_tasks = pd.read_excel("auxotrophies_references.xlsx",skiprows = 1)
+met_ids = pd.read_csv("auxotrophies_mapping_to_metID.csv") # metabolites, like amino acids => valine
+gapfilling_tasks = pd.read_excel("auxotrophies_references.xlsx",skiprows = 1) # what are the identifiers in this file. ??
 idx2 = met_ids['BiGG'].notnull()
 temp_met_ids = met_ids.loc[met_ids['BiGG'].notnull()].copy()
-met_dict = pd.Series(met_ids.loc[idx2].BiGG.values, index = met_ids.loc[idx2].Metabolite).to_dict()
+met_dict = pd.Series(met_ids.loc[idx2].BiGG.values, index = met_ids.loc[idx2].Metabolite).to_dict() #this will make a dictionary from the metabolites to the BIGG locations. 
 
 # change met ids to model met ids if possible
-for x in gapfilling_tasks.index:
+for x in gapfilling_tasks.index: #iterate all of the row labels (numbersz)
     if gapfilling_tasks['Metabolite'].iloc[x] in met_dict.keys():
-        gapfilling_tasks['Metabolite'].iloc[x] = met_dict[gapfilling_tasks['Metabolite'].iloc[x]]
+        gapfilling_tasks['Metabolite'].iloc[x] = met_dict[gapfilling_tasks['Metabolite'].iloc[x]] #overwrites all known metabolites with bigg locations
 
 if SPECIES_ID in plasmodb:
     r_len = len(universal_model.reactions)
